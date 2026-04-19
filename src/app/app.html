@@ -1,3 +1,69 @@
-<div>version-fresh-demo App</div>
+<header class="app-header">
+  <div>
+    <p class="eyebrow">Angular standalone + signals</p>
+    <h1>Version Fresh Demo</h1>
+  </div>
 
-<router-outlet />
+  <div class="version-chip" [class.version-chip--warning]="mismatchDetected()">
+    <span>{{ statusLabel() }}</span>
+    <strong>v{{ appVersion() }}</strong>
+  </div>
+</header>
+
+<main class="shell">
+  <section class="status-panel" aria-labelledby="status-title">
+    <div>
+      <p class="eyebrow">Client build</p>
+      <h2 id="status-title">v{{ appVersion() }}</h2>
+      <p class="meta">Generated {{ generatedAt | date: 'medium' }}</p>
+    </div>
+
+    <div>
+      <p class="eyebrow">Server build</p>
+      <h2>{{ latestServerVersion() ?? 'Waiting' }}</h2>
+      <p class="meta">
+        @if (lastCheckedAt()) {
+          Checked {{ lastCheckedAt() | date: 'mediumTime' }}
+        } @else {
+          Not checked yet
+        }
+      </p>
+    </div>
+
+    <div class="actions">
+      <button type="button" (click)="checkNow()" [disabled]="isRefreshing()">Check version</button>
+      <button type="button" class="secondary" (click)="refreshNow()">Clear cache</button>
+    </div>
+  </section>
+
+  <section class="flow-grid" aria-label="Version flow">
+    <article>
+      <span>1</span>
+      <h3>Script</h3>
+      <p>set-version.js reads the environment mode and writes the active version.</p>
+    </article>
+
+    <article>
+      <span>2</span>
+      <h3>Build</h3>
+      <p>ng build --output-hashing=all creates uniquely named browser assets.</p>
+    </article>
+
+    <article>
+      <span>3</span>
+      <h3>Runtime</h3>
+      <p>The app compares its compiled version with the server version endpoint.</p>
+    </article>
+
+    <article>
+      <span>4</span>
+      <h3>Refresh</h3>
+      <p>A mismatch clears browser caches and reloads once for the newest build.</p>
+    </article>
+  </section>
+</main>
+
+<footer class="app-footer">
+  <span>Version Fresh Demo</span>
+  <strong>Current app version: v{{ appVersion() }}</strong>
+</footer>
